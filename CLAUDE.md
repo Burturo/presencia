@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Presencia is a Spring Boot 4.0.6 web application (Java 21) for attendance/presence management. It uses server-side rendering with Thymeleaf, JWT-based authentication via Spring Security, and Spring Data JPA for persistence.
+Presencia is a Spring Boot 4.0.6 web application (Java 21) for employee attendance management. It combines:
+- **Admin web interface** (MVC + Thymeleaf, session auth) for managing employees, departments, and viewing reports
+- **REST API** (JWT auth) for the Flutter mobile app where employees clock in/out via GPS
 
 ## Build & Run Commands
 
@@ -18,27 +20,50 @@ Presencia is a Spring Boot 4.0.6 web application (Java 21) for attendance/presen
 
 On Windows, use `mvnw.cmd` instead of `./mvnw`.
 
+## Default Credentials (Dev)
+
+- **Admin login**: `admin@presencia.com` / `admin123`
+- **H2 Console**: http://localhost:8080/h2-console (JDBC URL: `jdbc:h2:mem:presenciadb`, user: `sa`, no password)
+
 ## Architecture
 
-- **Web Layer**: Spring MVC controllers + Thymeleaf templates (`src/main/resources/templates/`)
-- **Security**: Spring Security with JWT (jjwt 0.12.6) for authentication/authorization
-- **Data Layer**: Spring Data JPA repositories with H2 (dev) and PostgreSQL (prod)
-- **Validation**: Spring Validation (JSR-380) for bean validation
-- **Excel Processing**: Apache POI (poi-ooxml 5.3.0) for reading/writing Excel files
-- **Utilities**: Lombok for boilerplate reduction
-
-## Key Technical Decisions
-
-- **Spring Boot 4.0.6** with `spring-boot-starter-webmvc` (not reactive)
-- **Thymeleaf** with `thymeleaf-extras-springsecurity6` for security-aware templates
-- **Dual database**: H2 with console for development, PostgreSQL for production
-- **JWT tokens** for stateless authentication (jjwt library, not Spring's built-in OAuth)
-- **Lombok** configured as annotation processor in both compile and test phases
+- **Dual auth**: Spring Security with 2 filter chains — JWT stateless for `/api/**`, session-based form login for web
+- **Jackson 3.x**: Spring Boot 4.0.6 uses `tools.jackson.core` package (NOT `com.fasterxml.jackson`)
+- **Geolocation**: Haversine formula validates employee GPS position against department coordinates/radius
+- **Export**: Apache POI for Excel export of attendance data
 
 ## Package Structure
 
 Base package: `com.example.presencia`
 
-Source: `src/main/java/com/example/presencia/`
-Resources: `src/main/resources/` (application.properties, static/, templates/)
-Tests: `src/test/java/com/example/presencia/`
+| Package | Purpose |
+|---------|---------|
+| `model/` | JPA entities (User, Department, Attendance) + `enums/` (Role, AttendanceStatus) |
+| `repository/` | Spring Data JPA repositories with custom queries |
+| `service/` | Business logic: UserService, DepartmentService, AttendanceService, GeoLocationService, ExportService |
+| `security/` | SecurityConfig (dual filter chains) + `jwt/` (JwtTokenProvider, JwtAuthenticationFilter, JwtAuthEntryPoint) |
+| `controller/` | MVC controllers for admin web (Thymeleaf pages) |
+| `api/` | REST controllers for Flutter mobile (AuthApi, AttendanceApi, ProfileApi) |
+| `dto/` | `request/` and `response/` DTOs for API communication |
+| `exception/` | GlobalExceptionHandler, ResourceNotFoundException |
+| `config/` | DataInitializer (seeds admin user on startup) |
+
+## API Endpoints (Flutter)
+
+| Method | Endpoint | Auth |
+|--------|----------|------|
+| POST | `/api/auth/login` | Public |
+| POST | `/api/auth/refresh` | Public |
+| GET | `/api/attendance/today` | JWT |
+| POST | `/api/attendance/check-in` | JWT |
+| PUT | `/api/attendance/check-out` | JWT |
+| GET | `/api/attendance/history?month=&year=` | JWT |
+| GET | `/api/profile` | JWT |
+| PUT | `/api/profile/password` | JWT |
+
+## Key Configuration
+
+- `app.jwt.secret` / `app.jwt.expiration` / `app.jwt.refresh-expiration` — JWT settings
+- `app.attendance.start-hour` — Hour after which check-in is marked LATE (default: 08:00)
+- `spring.mvc.hiddenmethod.filter.enabled=true` — Enables PUT/DELETE from HTML forms
+- Production profile (`application-prod.properties`): PostgreSQL, env vars for credentials
