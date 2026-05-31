@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout :: head('Pointages - Presencia')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-4">
+    <h2>Pointages</h2>
+    <form class="row g-3 mt-2" method="get" th:action="@{/attendance}">
+        <div class="col-auto">
+            <input type="date" class="form-control" name="date" th:value="${selectedDate}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+        </div>
+        <div class="col-auto">
+            <a th:href="@{/attendance/report}" class="btn btn-outline-secondary">Rapport</a>
+        </div>
+    </form>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Employe</th>
+                <th>Departement</th>
+                <th>Entree</th>
+                <th>Sortie</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="a : ${attendances}">
+                <td th:text="${a.user.firstName + ' ' + a.user.lastName}"></td>
+                <td th:text="${a.user.department != null ? a.user.department.name : '-'}"></td>
+                <td th:text="${#temporals.format(a.checkIn, 'HH:mm')}"></td>
+                <td th:text="${a.checkOut != null ? #temporals.format(a.checkOut, 'HH:mm') : '-'}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${a.status.name() == 'PRESENT' ? 'bg-success' : (a.status.name() == 'LATE' ? 'bg-warning' : 'bg-danger')}"
+                          th:text="${a.status}"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

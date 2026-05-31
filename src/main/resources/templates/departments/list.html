@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout :: head('Departements - Presencia')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Departements</h2>
+        <a th:href="@{/departments/new}" class="btn btn-primary">Nouveau departement</a>
+    </div>
+    <div th:if="${success}" class="alert alert-success mt-2" th:text="${success}"></div>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Rayon (m)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="d : ${departments}">
+                <td th:text="${d.name}"></td>
+                <td th:text="${d.description}"></td>
+                <td th:text="${d.latitude}"></td>
+                <td th:text="${d.longitude}"></td>
+                <td th:text="${d.radius}"></td>
+                <td>
+                    <a th:href="@{/departments/{id}/edit(id=${d.id})}" class="btn btn-sm btn-warning">Modifier</a>
+                    <form th:action="@{/departments/{id}(id=${d.id})}" method="post" style="display:inline">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?')">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

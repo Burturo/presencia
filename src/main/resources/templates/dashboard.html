@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout :: head('Dashboard - Presencia')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-4">
+    <h2>Tableau de bord</h2>
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Employes</h5>
+                    <h2 th:text="${stats.totalEmployees}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Presents</h5>
+                    <h2 th:text="${stats.presentToday}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">En retard</h5>
+                    <h2 th:text="${stats.lateToday}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Absents</h5>
+                    <h2 th:text="${stats.absentToday}">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">Derniers pointages aujourd'hui</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Employe</th>
+                        <th>Departement</th>
+                        <th>Entree</th>
+                        <th>Sortie</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="a : ${todayAttendances}">
+                        <td th:text="${a.user.firstName + ' ' + a.user.lastName}"></td>
+                        <td th:text="${a.user.department != null ? a.user.department.name : '-'}"></td>
+                        <td th:text="${#temporals.format(a.checkIn, 'HH:mm')}"></td>
+                        <td th:text="${a.checkOut != null ? #temporals.format(a.checkOut, 'HH:mm') : '-'}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${a.status.name() == 'PRESENT' ? 'bg-success' : (a.status.name() == 'LATE' ? 'bg-warning' : 'bg-danger')}"
+                                  th:text="${a.status}"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
