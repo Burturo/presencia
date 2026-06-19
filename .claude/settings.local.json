@@ -1,7 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(git:*)",
+      "Bash(mvnw.cmd clean:*)",
+      "Bash(./mvnw.cmd clean:*)",
+      "Bash(cmd:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(ls:*)",
+      "Bash(bash mvnw:*)",
+      "Bash(./mvnw clean:*)",
+      "Bash(/c/Users/bmaha/IdeaProjects/presencia/mvnw.cmd clean:*)",
+      "Bash(powershell:*)",
+      "Bash(\"$MAVEN_HOME/bin/mvn\" clean:*)",
+      "Bash(\"$MAVEN_HOME/bin/mvn\" dependency:tree:*)",
+      "Bash(export:*)",
+      "Bash(jar tf:*)",
+      "Bash(cat:*)"
     ]
   }
 }
