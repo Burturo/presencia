@@ -7,11 +7,10 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class AuthResponse {
-    private String token;
+public class MobileAuthResponse {
+    private String accessToken;
     private String refreshToken;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String role;
+    @Builder.Default
+    private String tokenType = "Bearer";
+    private UserResponse user;
 }

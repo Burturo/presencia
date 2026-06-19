@@ -47,7 +47,7 @@ public class AttendanceService {
 
         LocalTime limit = LocalTime.parse(startHour);
         AttendanceStatus status = LocalTime.now().isAfter(limit)
-                ? AttendanceStatus.LATE : AttendanceStatus.PRESENT;
+                ? AttendanceStatus.RETARD : AttendanceStatus.PRESENT;
 
         Attendance attendance = Attendance.builder()
                 .user(user)
@@ -105,7 +105,7 @@ public class AttendanceService {
         return DashboardStats.builder()
                 .totalEmployees(userService.countActiveEmployees())
                 .presentToday(attendanceRepository.countByDateAndStatus(today, AttendanceStatus.PRESENT))
-                .lateToday(attendanceRepository.countByDateAndStatus(today, AttendanceStatus.LATE))
+                .retardToday(attendanceRepository.countByDateAndStatus(today, AttendanceStatus.RETARD))
                 .absentToday(userService.countActiveEmployees()
                         - attendanceRepository.countByDate(today))
                 .build();

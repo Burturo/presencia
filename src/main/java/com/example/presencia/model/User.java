@@ -35,11 +35,18 @@ public class User {
 
     @NotBlank
     @Column(nullable = false)
-    private String firstName;
+    private String prenom;
 
     @NotBlank
     @Column(nullable = false)
-    private String lastName;
+    private String nom;
+
+    @Column(unique = true)
+    private String matricule;
+
+    private String photo;
+
+    private String poste;
 
     @NotNull
     @Enumerated(EnumType.STRING)

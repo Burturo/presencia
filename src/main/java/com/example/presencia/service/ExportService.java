@@ -44,7 +44,7 @@ public class ExportService {
             for (Attendance a : attendances) {
                 Row row = sheet.createRow(rowIdx++);
                 row.createCell(0).setCellValue(a.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                row.createCell(1).setCellValue(a.getUser().getFirstName() + " " + a.getUser().getLastName());
+                row.createCell(1).setCellValue(a.getUser().getPrenom() + " " + a.getUser().getNom());
                 row.createCell(2).setCellValue(a.getUser().getEmail());
                 row.createCell(3).setCellValue(
                         a.getUser().getDepartment() != null ? a.getUser().getDepartment().getName() : "");

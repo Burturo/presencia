@@ -38,13 +38,13 @@
         <tbody>
             <tr th:each="a : ${attendances}">
                 <td th:text="${#temporals.format(a.date, 'dd/MM/yyyy')}"></td>
-                <td th:text="${a.user.firstName + ' ' + a.user.lastName}"></td>
+                <td th:text="${a.user.prenom + ' ' + a.user.nom}"></td>
                 <td th:text="${a.user.department != null ? a.user.department.name : '-'}"></td>
                 <td th:text="${#temporals.format(a.checkIn, 'HH:mm')}"></td>
                 <td th:text="${a.checkOut != null ? #temporals.format(a.checkOut, 'HH:mm') : '-'}"></td>
                 <td>
                     <span class="badge"
-                          th:classappend="${a.status.name() == 'PRESENT' ? 'bg-success' : (a.status.name() == 'LATE' ? 'bg-warning' : 'bg-danger')}"
+                          th:classappend="${a.status.name() == 'PRESENT' ? 'bg-success' : (a.status.name() == 'RETARD' ? 'bg-warning' : 'bg-danger')}"
                           th:text="${a.status}"></span>
                 </td>
             </tr>

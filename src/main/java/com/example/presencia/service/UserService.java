@@ -22,7 +22,7 @@ public class UserService {
     }
 
     public List<User> findEmployees() {
-        return userRepository.findByRole(Role.EMPLOYEE);
+        return userRepository.findByRole(Role.EMPLOYE);
     }
 
     public User findById(Long id) {
@@ -35,6 +35,21 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouve: " + email));
     }
 
+    public User findByMatricule(String matricule) {
+        return userRepository.findByMatricule(matricule)
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouve: " + matricule));
+    }
+
+    public User findByIdentifier(String identifier) {
+        if (identifier == null || identifier.isBlank()) {
+            throw new IllegalArgumentException("Identifiant requis");
+        }
+        if (identifier.contains("@")) {
+            return findByEmail(identifier);
+        }
+        return findByMatricule(identifier);
+    }
+
     public User create(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email deja utilise: " + user.getEmail());
@@ -45,12 +60,25 @@ public class UserService {
 
     public User update(Long id, User updated) {
         User user = findById(id);
-        user.setFirstName(updated.getFirstName());
-        user.setLastName(updated.getLastName());
+        user.setPrenom(updated.getPrenom());
+        user.setNom(updated.getNom());
         user.setEmail(updated.getEmail());
+        user.setMatricule(updated.getMatricule());
+        user.setPoste(updated.getPoste());
         user.setRole(updated.getRole());
         user.setDepartment(updated.getDepartment());
         user.setActive(updated.isActive());
+        return userRepository.save(user);
+    }
+
+    public User updateProfile(String email, String nom, String prenom, String newEmail) {
+        User user = findByEmail(email);
+        if (!email.equals(newEmail) && userRepository.existsByEmail(newEmail)) {
+            throw new IllegalArgumentException("Email deja utilise: " + newEmail);
+        }
+        user.setNom(nom);
+        user.setPrenom(prenom);
+        user.setEmail(newEmail);
         return userRepository.save(user);
     }
 

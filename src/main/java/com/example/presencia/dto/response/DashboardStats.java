@@ -10,6 +10,6 @@ import lombok.Data;
 public class DashboardStats {
     private long totalEmployees;
     private long presentToday;
-    private long lateToday;
+    private long retardToday;
     private long absentToday;
 }

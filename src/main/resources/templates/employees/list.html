@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <tr th:each="e : ${employees}">
-                <td th:text="${e.firstName + ' ' + e.lastName}"></td>
+                <td th:text="${e.prenom + ' ' + e.nom}"></td>
                 <td th:text="${e.email}"></td>
                 <td th:text="${e.role}"></td>
                 <td th:text="${e.department != null ? e.department.name : '-'}"></td>
